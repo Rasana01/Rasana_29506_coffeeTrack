@@ -1,114 +1,86 @@
 # Coffee Lot Quality and Grading Tracker
 
-| | |
-|---|---|
-| **Student** | NDAGIJIMANA RASANA Bonte |
-| **Student ID** | 29506 |
-| **Course** | INSY 8311: Database Development with PL/SQL |
-| **Instructor** | Eric Maniraguha |
-| **Institution** | Adventist University of Central Africa (AUCA), Faculty of Information Technology |
-| **Academic year** | 2026-2027, Semester I |
-| **Repository** | Rasana_29506_coffeeTrack |
-| **Environment** | Oracle Database 21c Express Edition (XE), SQL Developer; Oracle APEX for the user interface |
+**Student:** NDAGIJIMANA RASANA Bonte
+**Student ID:** 29506
+**Course:** INSY 8311: Database Development with PL/SQL
+**Instructor:** Eric Maniraguha
+**University:** Adventist University of Central Africa (AUCA)
+**Tools:** Oracle Database 21c Express Edition, SQL Developer, Oracle APEX
 
 ---
 
 ## 1. Problem Statement
 
-Coffee cooperatives and washing stations grade each lot by "cupping" it (a structured taste test scored on aroma, flavor, acidity, body and more). In many places these scores are written on paper or kept in scattered spreadsheets. This causes three problems:
+After coffee is harvested, each lot is tested by tasting it. Coffee people call this cupping. The taster gives scores for things like aroma, flavor, acidity and body, and the scores are added up to give a grade.
 
-- **Inconsistent grading:** the same total score can be graded differently by different people.
-- **Invalid data goes unnoticed:** scores outside the allowed range, or totals that do not match their components, are not caught.
-- **No quality overview:** managers cannot easily compare quality by region, altitude, variety or processing method, so low-quality lots are discovered late.
+In many places these scores are written on paper or kept in different Excel files. This causes problems:
+
+- The same score can get different grades from different people.
+- Mistakes, such as a score that is too high or a wrong total, are not noticed.
+- Managers cannot easily see which regions or processing methods give the best coffee, so weak lots are found too late.
 
 ## 2. Objectives
 
-**Main objective:** Build an Oracle PL/SQL database that records coffee lots and cupping scores, grades each lot automatically with business rules, and reports on quality.
+**Main objective:** Build an Oracle database with PL/SQL that keeps coffee lots and their taste scores, gives each lot a grade automatically, and shows quality results.
 
 **Specific objectives:**
-1. Design and implement a normalized (3NF) Oracle schema for lots, regions, varieties, processing methods and cupping scores.
-2. Clean, load and validate the real CQI coffee quality data (1,339 lots).
-3. Enforce grading and validation rules in PL/SQL (functions, procedures, packages and triggers).
-4. Record every change to scores in an audit log, with alerts for suspicious or low-quality lots.
-5. Build an Oracle APEX application where cuppers enter scores and managers view quality dashboards.
+1. Design a clean 3NF database for lots, regions, varieties, processing methods and scores.
+2. Clean and load the real coffee data (1,339 lots).
+3. Use PL/SQL to grade lots and refuse wrong scores.
+4. Keep an audit log of every change and raise alerts for low-quality lots.
+5. Build an Oracle APEX app where tasters enter scores and managers see dashboards.
 
 ## 3. Data Source
 
-| | |
-|---|---|
-| **Dataset** | Coffee Quality database from CQI |
-| **Author on Kaggle** | Diego Volpatto |
-| **Link** | https://www.kaggle.com/datasets/volpatto/coffee-quality-database-from-cqi |
-| **Original source** | Scraped from the Coffee Quality Institute (CQI) site, January 2018 (scraper: https://github.com/jldbc/coffee-quality-database) |
-| **File used** | `merged_data_cleaned.csv` (Arabica + Robusta) |
-| **Size** | 1,339 records, 44 columns (1,311 Arabica, 28 Robusta) |
-| **Coverage** | 36 countries, about 356 distinct regions; 160 lots from East Africa (Ethiopia, Tanzania, Uganda, Kenya, Malawi, Burundi, Rwanda, Zambia) |
-| **Licence** | Database: Open Database, Contents: Database Contents (as shown on the Kaggle page) |
-| **Personal data** | None loaded: owner, farm name, mill, company, producer and certification contact columns are **dropped** before loading. (Some farm-name cells in the raw file even contain phone numbers and emails.) |
+- **Dataset:** Coffee Quality database from CQI (by Diego Volpatto)
+- **Link:** https://www.kaggle.com/datasets/volpatto/coffee-quality-database-from-cqi
+- **Original source:** Coffee Quality Institute, gathered in January 2018
+- **File I will use:** `merged_data_cleaned.csv`
+- **Size:** 1,339 lots and 44 columns, from 36 countries (1,311 Arabica and 28 Robusta)
+- **Licence:** Database: Open Database, Contents: Database Contents (as shown on Kaggle)
+- **Personal data:** I will remove the owner, farm, mill and company columns, so no personal information is loaded.
 
-**Known data issues (handled in Phase II cleaning):**
-- 1 lot has a total score of 0 (invalid), and 2 grading dates are malformed.
-- Altitude is recorded in metres for 1,157 rows and in feet for 182 rows; I use the `altitude_mean_meters` column (converted) and keep the unit.
-- Missing values: variety (226), processing method (170), altitude (230), region (59).
-- Harvest year has mixed formats (for example `2013`, `2013/2014`).
-- Only 1 lot is from Rwanda, so the project is built on the global CQI data, with East African lots as the focus group for analysis.
+**Things to clean:** one lot has a total score of 0, altitude is in metres for some rows and feet for others, and some values are missing (variety, processing method, altitude, region). Only one lot is from Rwanda, so I will focus on the 160 lots from East Africa.
 
 ## 4. Innovation
 
-**Option:** User interface
-**Tool:** Oracle APEX, connected directly to my Oracle database.
+- **Option:** User interface
+- **Tool:** Oracle APEX, connected to my Oracle database
 
-- A cupper enters a lot's scores in an APEX form. The form calls the PL/SQL procedure `record_cupping`, which validates the scores, computes the total and assigns the grade.
-- Dashboard pages show average quality by country and region, altitude band, variety and processing method, plus a list of low-quality lots and open alerts.
-- All business rules stay in PL/SQL (procedures and triggers). APEX only displays and collects data.
-- Documentation, run steps and screenshots will be in the `innovation/` folder.
+The taster enters scores in an APEX form, and the form calls my PL/SQL procedure `record_cupping`. A dashboard shows average quality by country, region and processing method, and the open alerts. The rules stay in PL/SQL, and APEX only shows and collects the data.
 
 ## 5. Planned Tables
 
-| Table | Purpose |
+| Table | What it keeps |
 |---|---|
-| `countries` | Country of origin |
-| `regions` | Region within a country (FK to countries) |
-| `varieties` | Coffee variety (Bourbon, Caturra, SL28, ...) |
-| `processing_methods` | Washed, Natural, Semi-washed, Honey, Other |
-| `partners` | In-country partner organisations that graded the lot |
-| `lots` | One row per coffee lot (species, region, variety, method, partner, harvest year, grading date, altitude in metres, bags, bag weight, moisture, defects) |
-| `cupping_scores` | The ten sensory scores, total points and assigned grade, per lot |
-| `grade_rules` | Grade names and the minimum total score for each |
-| `app_users` | Application users and roles (cupper, manager); no personal data |
-| `quality_alerts` | Alerts raised for low-quality or suspicious lots |
-| `audit_log` | Who changed what and when, with old and new values |
+| `countries` | Countries of origin |
+| `regions` | Regions inside each country |
+| `varieties` | Coffee varieties |
+| `processing_methods` | How the coffee was processed |
+| `partners` | Organisations that graded the lots |
+| `lots` | One row for each coffee lot |
+| `cupping_scores` | The ten taste scores, total and grade of each lot |
+| `grade_rules` | Grade names and the minimum score for each |
+| `app_users` | App users and their roles |
+| `quality_alerts` | Alerts for low-quality lots |
+| `audit_log` | Who changed what, and when |
 
-Relationships: a country has many regions; a region has many lots; a lot has one or more cupping scores; variety, processing method and partner each have many lots. The full ERD and data dictionary will be added in Phase II.
+One region has many lots, and one lot can have many scores.
 
 ## 6. Planned PL/SQL Features
 
-| Feature | Where it is used |
+| Feature | Where I will use it |
 |---|---|
-| Function `get_grade(total_points)` | Returns Specialty, Premium or Below Grade by reading `grade_rules` |
-| Function `calc_total(...)` | Sums the ten sensory scores to check the entered total |
-| Procedure `record_cupping(lot_id, scores...)` | Inserts a score, calculates the total, assigns the grade and raises an alert if below the threshold |
-| Procedure `register_lot(...)` | Adds a new lot with validation of region, variety and method |
-| Cursor (explicit) | Loops over regions to compute average and best score per region for reports |
-| Trigger (before insert/update) | Blocks any score outside its allowed range (0 to 10) and any total that does not match its components |
-| Trigger (audit) | Writes every insert, update and delete on `cupping_scores` to `audit_log` |
-| Restriction rule trigger | Prevents score changes on a lot after it has been locked as final |
-| Package `coffee_pkg` | Groups the functions and procedures above |
-| Exceptions | `NO_DATA_FOUND` for unknown lots, `DUP_VAL_ON_INDEX` for duplicate scoring, custom exceptions for invalid scores |
-| Scheduled job (optional, `DBMS_SCHEDULER`) | Nightly check that raises alerts for low-quality lots |
+| Function `get_grade` | Gives the grade of a lot from its total score |
+| Procedure `record_cupping` | Saves a new score, adds up the total, sets the grade and creates an alert if the score is low |
+| Procedure `register_lot` | Adds a new lot after checking its region, variety and method |
+| Cursor | Goes through each region to find its average score for reports |
+| Trigger 1 | Stops scores outside 0 to 10 |
+| Trigger 2 | Writes every insert, update and delete on scores to the audit log |
+| Trigger 3 | Stops changes to a lot that is already final |
+| Package `coffee_pkg` | Keeps the functions and procedures together |
+| Exceptions | Handle an unknown lot or a duplicate score |
 
-## 7. Repository Structure
-
-```
-docs/
-  research/research_log.md
-  proposal/
-  presentation/
-data/
-innovation/        (added in later phases)
-sql/               (added in later phases)
-```
-
-## 8. References
+## 7. References
 
 - Volpatto, D. (n.d.). *Coffee quality database from CQI* [Data set]. Kaggle. https://www.kaggle.com/datasets/volpatto/coffee-quality-database-from-cqi
