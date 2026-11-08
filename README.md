@@ -1,11 +1,11 @@
 # Coffee Lot Quality and Grading Tracker
 
-**Student:** NDAGIJIMANA RASANA Bonte
-**Student ID:** 29506
-**Course:** INSY 8311: Database Development with PL/SQL
-**Instructor:** Eric Maniraguha
-**University:** Adventist University of Central Africa (AUCA)
-**Tools:** Oracle Database 21c Express Edition, SQL Developer, Oracle APEX
+- **Student:** NDAGIJIMANA RASANA Bonte
+- **Student ID:** 29506
+- **Course:** INSY 8311: Database Development with PL/SQL
+- **Instructor:** Eric Maniraguha
+- **University:** Adventist University of Central Africa (AUCA)
+- **Tools:** Oracle Database 21c Express Edition, SQL Developer, Oracle APEX
 
 ---
 
