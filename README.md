@@ -83,4 +83,9 @@ One region has many lots, and one lot can have many scores.
 
 ## 7. References
 
+- National Agricultural Export Development Board. (2026). *Rwanda's agricultural exports surpass $1 billion, marking a historic milestone*. NAEB. https://www.naeb.gov.rw/1/updates/news-detail/rwandas-agricultural-exports-surpass-1-billion-marking-a-historic-milestone
+- Oracle. (n.d.). PL/SQL triggers. In *Oracle Database PL/SQL language reference* (Release 21). https://docs.oracle.com/en/database/oracle/oracle-database/21/lnpls/plsql-triggers.html
+- Sudrajat, A. R., Pramunendar, R. A., & Rohman, M. S. (2025). Optimized LightGBM model for predicting total cup points of Arabica coffee using sensory cupping data. *Jurnal Teknologi dan Manajemen Informatika, 11*(2), 143-152.
+- TechnoServe. (2024, January 22). *Introducing a new mobile application for monitoring coffee farming best practices* [Blog post]. https://www.technoserve.org/blog/mobile-application-coffee-farming-best-practices/
+- Teran, E. (2024). Enhancement of coffee quality attributes by combining processing methods and varieties. *Beverages, 10*(1), Article 10. https://doi.org/10.3390/beverages10010010
 - Volpatto, D. (n.d.). *Coffee quality database from CQI* [Data set]. Kaggle. https://www.kaggle.com/datasets/volpatto/coffee-quality-database-from-cqi
